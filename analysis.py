@@ -31,7 +31,7 @@ class Analysis():
         Select numerical columns which contain missing values.
         If printing=True, print the percentage of missing values for each column with missing values.
         """
-        self.num_cols_with_na = [var for var in self.columns if self.data[var].dtypes != "O"]
+        self.num_cols_with_na = [var for var in self.columns if self.data[var].dtypes!="O"]
 
         if printing:
             print("Percentage of missing values:")
