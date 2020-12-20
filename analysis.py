@@ -31,15 +31,25 @@ class Analysis():
         Select numerical columns which contain missing values.
         If printing=True, print the percentage of missing values for each column with missing values.
         """
-        self.num_cols_with_na = [var for var in self.columns if self.data[var].isnull().sum()>1]
+        self.num_cols_with_na = [var for var in self.columns if self.data[var].dtypes != "O"]
 
         if printing:
             print("Percentage of missing values:")
             print()
             print(self.data[self.num_cols_with_na].isnull().mean())
-            
 
-    def plot_compare_na(self, col_na, col_target):
+    
+    def discrete_columns_with_na(self, exclude=None, printing=False):
+        self.discrete_cols_with_na = [var for var in self.num_cols_with_na
+                                        if (self.data[var].nunique()<20 and var not in exclude)]
+
+        if printing:
+            print("Percentage of missing values:")
+            print()
+            print(self.data[self.discrete_cols_with_na].isnull().mean())
+
+
+    def plot_na(self, col_na, col_target):
         """
         Group the column col_na with 1/0 and plot the median of col_target for each group.
         """
@@ -51,4 +61,10 @@ class Analysis():
         data.groupby(col_na)[col_target].median().plot.bar()
         plt.title(col_na)
         plt.show()
+
+    
+    def plot_num_na(self):
+        pass
         
+    def plot_discrete_col(self, target):
+        pass
