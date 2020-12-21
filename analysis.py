@@ -8,20 +8,35 @@ class Analysis():
     Class for first explorative data analysis.
     """
 
-    def __init__(self, data):
+    def __init__(self, data, target=None):
         self.data = data
         self.columns = data.columns
+        self.target = target
 
 
-    def select_cols_types(self, exclude=None):
+    def select_cols_types(self, exclude=None, printing=False):
         """
         Select all categorical, numerical and discrete columns.
         Exclude: Excluding discrete columns (e.g. "ID")
         """
         self.categorical_cols = [var for var in self.columns if self.data[var].dtypes=="O"]
-        self.num_cols = [var for var in self.columns if self.data[var].dtypes!="O"]
-        self.discrete_cols = [var for var in self.num_cols if (self.data[var].nunique()<20 
-                                            and var not in exclude)]
+        self.numerical_cols = [var for var in self.columns if self.data[var].dtypes!="O"]
+
+        if not exclude:
+            self.discrete_cols = [var for var in self.numerical_cols if (self.data[var].nunique()<20)]
+        elif exclude:
+            self.discrete_cols = [var for var in self.numerical_cols if (self.data[var].nunique()<20)]
+        
+        if printing:
+            print("Categorical Columns:")
+            print(self.categorical_cols)
+            print("--" * 30)
+            print("Numerical Columns:")
+            print(self.numerical_cols)
+            print("--" * 30)
+            print("Discrete Columns")
+            print(self.discrete_cols)
+
 
 
     def columns_with_na(self, printing=False):
@@ -67,7 +82,7 @@ class Analysis():
         Group the column col_na with 1/0 and plot the median of col_target for each group.
         """
         df = self.data.copy()
-        df[col_na] = np.where(df[col_na].isnull(), 1, 0) # 1 if missing value, 0 otherwise
+        df[col_na] = np.where(df[col_na].isnull(), "Missing", "Not Missing") 
         df.groupby(col_na)[col_target].median().plot.bar()
         plt.title(col_na)
         plt.show()
