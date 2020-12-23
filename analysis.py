@@ -133,7 +133,7 @@ class Analysis():
 
     def find_frequent_labels(self, col, col_target, rare_perc=0.01):
         temp = self.data.groupby(col)[col_target].count() / len(self.data)
-        self.frequent_labels = tmp[temp > rare_perc].index
+        self.frequent_labels = temp[temp > rare_perc].index
 
 
     def replace_frequent_labels(self, col, col_target, rare_perc=0.01):
